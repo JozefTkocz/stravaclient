@@ -1,0 +1,29 @@
+{
+  "token_type": "Bearer",
+  "expires_at": 1644181546,
+  "expires_in": 21008,
+  "refresh_token": "c7718c6cd6612111de82f1343b3e17787810cf89",
+  "access_token": "bf8bebf5572830ac579aaafe3028a5e48e73c863",
+  "athlete": {
+    "id": 36371430,
+    "username": null,
+    "resource_state": 2,
+    "firstname": "Joe",
+    "lastname": "T",
+    "bio": null,
+    "city": null,
+    "state": null,
+    "country": null,
+    "sex": "M",
+    "premium": false,
+    "summit": false,
+    "created_at": "2018-11-09T10:31:42Z",
+    "updated_at": "2021-01-21T00:00:07Z",
+    "badge_type_id": 0,
+    "weight": null,
+    "profile_medium": "https://graph.facebook.com/10158135437537200/picture?height=256&width=256",
+    "profile": "https://graph.facebook.com/10158135437537200/picture?height=256&width=256",
+    "friend": null,
+    "follower": null
+  }
+}
