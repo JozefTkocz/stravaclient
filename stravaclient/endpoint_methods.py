@@ -3,6 +3,8 @@ import requests
 import stravaclient.constants.endpoints as endpoints
 from stravaclient.authorisation import OAuthHandler
 
+from stravaclient.models.activity import UpdatableActivity
+
 
 class StravaClient:
     def __init__(self, authorisation: OAuthHandler):
@@ -23,12 +25,7 @@ class StravaClient:
         response = requests.get(endpoints.activity(activity_id), headers=auth_header)
         return response.json()
 
-
-
-
-def get_last_activity():
-    pass
-
-
-def update_activity():
-    pass
+    def update_activity(self, athlete_id, activity_id, updatable_activity: UpdatableActivity):
+        auth_header = self.authorisation.generate_authorisation_header(athlete_id)
+        response = requests.put(endpoints.activity(activity_id), headers=auth_header, data=updatable_activity.to_json())
+        return response.text
