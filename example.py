@@ -1,11 +1,9 @@
-import requests
-import stravaclient.constants.endpoints as endpoints
 from stravaclient.authorisation import OAuthHandler
+from stravaclient.endpoint_methods import StravaClient
 
 REQUIRE_USER_AUTHORISATION = False
 
 if __name__ == '__main__':
-    # request access token
     athlete_id = 36371430
 
     oauth = OAuthHandler.from_config('authorisation.ini')
@@ -13,10 +11,13 @@ if __name__ == '__main__':
     if REQUIRE_USER_AUTHORISATION:
         oauth.prompt_user_authorisation()
 
-    auth_header = oauth.generate_authorisation_header(athlete_id)
+    client = StravaClient(oauth)
 
-    print('requesting athlete data...')
-    response = requests.get(endpoints.athlete_info, headers=auth_header)
+    data = client.get_athlete_info(athlete_id)
+    print(data)
 
-    print(response.status_code)
-    print(response.text)
+    data = client.list_activities(athlete_id)
+    print(data)
+
+    data = client.get_activity(athlete_id, 6635782418)
+    print(data)

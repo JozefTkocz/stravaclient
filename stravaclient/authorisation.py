@@ -21,9 +21,10 @@ class OAuthHandler:
                    config_parser['Authentication']['database'])
 
     def prompt_user_authorisation(self):
+        scope = 'read_all,activity:read_all,activity:write'
         # prompt the user to provide access
         print('Retrieve Auth code from URL:')
-        code_request_url = f'{endpoints.oauth_authorisation}?client_id={self.client_id}&response_type=code&redirect_uri=http://localhost/exchange_token&approval_prompt=force&scope=read_all'
+        code_request_url = f'{endpoints.oauth_authorisation}?client_id={self.client_id}&response_type=code&redirect_uri=http://localhost/exchange_token&approval_prompt=force&scope={scope}'
         print(code_request_url)
         authorisation_code = input('Enter authorisation code: ')
 
