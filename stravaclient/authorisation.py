@@ -1,5 +1,5 @@
 import time
-
+import configparser
 import requests
 import tinydb
 
@@ -11,6 +11,14 @@ class OAuthHandler:
         self.client_id = client_id
         self.client_secret = client_secret
         self.database = tinydb.TinyDB(database_location)
+
+    @classmethod
+    def from_config(cls, filepath):
+        config_parser = configparser.ConfigParser()
+        auth_config = config_parser.read(filepath)
+        return cls(int(config_parser['Authentication']['client_id']),
+                   config_parser['Authentication']['client_secret'],
+                   config_parser['Authentication']['database'])
 
     def prompt_user_authorisation(self):
         # prompt the user to provide access
