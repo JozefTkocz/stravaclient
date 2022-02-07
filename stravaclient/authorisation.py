@@ -4,7 +4,7 @@ import time
 import requests
 
 import stravaclient.constants.endpoints as endpoints
-from stravaclient.storage.tokens import TokenCache, LocalTokenCache
+from stravaclient.storage.tokens import TokenCache, LocalTokenCache, TokenCacheFactory
 
 
 class OAuthHandler:
@@ -17,9 +17,14 @@ class OAuthHandler:
     def from_config(cls, filepath):
         config_parser = configparser.ConfigParser()
         auth_config = config_parser.read(filepath)
-        return cls(int(config_parser['Authentication']['client_id']),
-                   config_parser['Authentication']['client_secret'],
-                   LocalTokenCache(config_parser['Authentication']['database']))
+
+        token_cache_type = config_parser['TokenCache']['type']
+
+        token_cache = TokenCacheFactory.build(token_cache_type, **config_parser['TokenCache'])
+
+        return cls(int(config_parser['Credentials']['client_id']),
+                   config_parser['Credentials']['client_secret'],
+                   token_cache)
 
     def prompt_user_authorisation(self):
         scope = 'read_all,activity:read_all,activity:write'
