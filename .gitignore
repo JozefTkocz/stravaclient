@@ -116,3 +116,4 @@ dmypy.json
 *.xml
 authorisation.json
 authorisation.json
+*.py
