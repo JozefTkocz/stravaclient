@@ -22,10 +22,3 @@ if __name__ == '__main__':
 
     response = client.update_activity(athlete_id, 6635782418, temp_activity)
     print(response)
-
-    """
-    upload to strava -> webhook with activity ID-> download activity ID -> Auto edit description -> reupload activity
-    
-    upload to strava -> poll for new activities -> ditto... 
-    
-    """

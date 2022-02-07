@@ -4,7 +4,7 @@ import time
 import requests
 
 import stravaclient.constants.endpoints as endpoints
-from stravaclient.storage.tokens import TokenCache, LocalTokenCache, TokenCacheFactory
+from stravaclient.storage.tokens import TokenCache, TokenCacheFactory
 
 
 class OAuthHandler:
