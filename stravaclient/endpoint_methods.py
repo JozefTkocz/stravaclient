@@ -1,13 +1,13 @@
 import requests
 
 import stravaclient.constants.endpoints as endpoints
-from stravaclient.authorisation import LocalCacheAuthenticationHandler
+from stravaclient.authorisation import OAuthHandler
 
 from stravaclient.models.activity import UpdatableActivity
 
 
 class StravaClient:
-    def __init__(self, authorisation: LocalCacheAuthenticationHandler):
+    def __init__(self, authorisation: OAuthHandler):
         self.authorisation = authorisation
 
     def get_athlete_info(self, athlete_id):

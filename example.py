@@ -1,6 +1,6 @@
 import tinydb
 
-from stravaclient.authorisation import LocalCacheAuthenticationHandler
+from stravaclient.authorisation import OAuthHandler
 from stravaclient.endpoint_methods import StravaClient
 from stravaclient.models.activity import UpdatableActivity
 
@@ -9,9 +9,7 @@ REQUIRE_USER_AUTHORISATION = False
 if __name__ == '__main__':
     athlete_id = 36371430
 
-    db = tinydb.TinyDB('./authorisation.json')
-
-    oauth = LocalCacheAuthenticationHandler.from_config('authorisation.ini')
+    oauth = OAuthHandler.from_config('authorisation.ini')
 
     if REQUIRE_USER_AUTHORISATION:
         oauth.prompt_user_authorisation()

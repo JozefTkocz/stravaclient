@@ -1,6 +1,5 @@
 import configparser
 import time
-from typing import Protocol
 
 import requests
 
@@ -8,26 +7,7 @@ import stravaclient.constants.endpoints as endpoints
 from stravaclient.storage.tokens import TokenCache, LocalTokenCache
 
 
-class OAuthHandler(Protocol):
-
-    @classmethod
-    def from_config(self, filepath: str):
-        ...
-
-    def prompt_user_authorisation(self):
-        pass
-
-    def upsert_authorisation_database(self):
-        pass
-
-    def refresh_access_token(self):
-        pass
-
-    def generate_authorisation_header(self):
-        pass
-
-
-class LocalCacheAuthenticationHandler():
+class OAuthHandler:
     def __init__(self, client_id: int, client_secret: str, token_cache: TokenCache):
         self.client_id = client_id
         self.client_secret = client_secret
