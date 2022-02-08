@@ -1,6 +1,3 @@
-import json
-
-
 class UpdatableActivity:
     def __init__(self,
                  commute: bool,
@@ -29,12 +26,19 @@ class UpdatableActivity:
                    activity['gear_id'])
 
     def to_json(self):
-        return json.dumps({
-            'commute': self.commute,
-            'trainer': self.trainer,
-            'hide_from_home': self.hide_from_home,
+        return {
+            'commute': bool_to_json_string(self.commute),
+            'trainer': bool_to_json_string(self.trainer),
+            'hide_from_home': bool_to_json_string(self.hide_from_home),
             'description': self.description,
             'name': self.name,
             'type': self.type,
             'gear_id': self.gear_id
-        })
+        }
+
+
+def bool_to_json_string(boolean_value: bool):
+    if boolean_value:
+        return 'true'
+    else:
+        return 'false'
