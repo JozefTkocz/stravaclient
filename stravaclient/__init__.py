@@ -1,3 +1,4 @@
-from stravaclient.storage.tokens import DynamoDBCache
-from stravaclient.endpoint_methods import StravaClient
+import stravaclient.models
 from stravaclient.authorisation import OAuthHandler
+from stravaclient.endpoint_methods import StravaClient
+from stravaclient.storage.tokens import DynamoDBCache
