@@ -1,3 +1,5 @@
+import json
+
 class UpdatableActivity:
     def __init__(self,
                  commute: bool,
@@ -26,7 +28,7 @@ class UpdatableActivity:
                    activity['gear_id'])
 
     def to_json(self):
-        return {
+        return json.dumps({
             'commute': self.commute,
             'trainer': self.trainer,
             'hide_from_home': self.hide_from_home,
@@ -34,4 +36,4 @@ class UpdatableActivity:
             'name': self.name,
             'type': self.type,
             'gear_id': self.gear_id
-        }
+        })
