@@ -1,5 +1,6 @@
 import json
 
+
 class UpdatableActivity:
     def __init__(self,
                  commute: bool,
@@ -19,9 +20,9 @@ class UpdatableActivity:
 
     @classmethod
     def from_activity(cls, activity):
-        return cls(bool(activity['commute']),
-                   bool(activity['trainer']),
-                   bool(activity['hide_from_home']),
+        return cls(activity['commute'],
+                   activity['trainer'],
+                   activity['hide_from_home'],
                    activity['description'],
                    activity['name'],
                    activity['type'],
