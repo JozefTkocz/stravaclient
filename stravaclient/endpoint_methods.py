@@ -26,7 +26,7 @@ class StravaClient:
 
     def update_activity(self, athlete_id, activity_id, updatable_activity: UpdatableActivity):
         auth_header = self.authorisation.generate_authorisation_header(athlete_id)
-        response = requests.put(endpoints.activity(activity_id), headers=auth_header, data=updatable_activity.to_json())
+        response = requests.put(endpoints.activity(activity_id), headers=auth_header, json=updatable_activity.to_json())
         return response.json()
 
     def get_activity_stream_set(self, athlete_id, activity_id, streams):
