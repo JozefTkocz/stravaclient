@@ -9,3 +9,7 @@ athlete_activities = athlete_info + '/activities'
 
 def activity(activity_id):
     return base_url + f'/api/v3/activities/{activity_id}'
+
+
+def activity_streams(activity_id):
+    return activity(activity_id) + '/streams'

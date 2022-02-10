@@ -117,3 +117,6 @@ dmypy.json
 authorisation.json
 authorisation.json
 *.py
+streamset.json
+authorisation.json
+.idea/workspace.xml
