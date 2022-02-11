@@ -65,17 +65,12 @@ class OAuthHandler:
         if self.current_token is None:
             self.pull_token_data_from_cache(athlete_id)
 
-        # auth_data = self.token_cache.get_authorisation_token(athlete_id)
-
-        # token_expires_at = auth_data['expires_at']
         current_epoch_time = int(time.time())
 
         if current_epoch_time > self.current_token_expiry:
             refresh_token = self.current_refresh_token
             self.refresh_access_token(athlete_id, refresh_token)
-            # auth_data = self.token_cache.get_authorisation_token(athlete_id)
 
-        # token = auth_data['access_token']
         return {'Authorization': f'Bearer {self.current_token}'}
 
     def pull_token_data_from_cache(self, athlete_id):
