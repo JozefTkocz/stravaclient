@@ -13,6 +13,10 @@ class OAuthHandler:
         self.client_secret = client_secret
         self.token_cache = token_cache
 
+        self.current_token = None
+        self.current_token_expiry = None
+        self.current_refresh_token = None
+
     @classmethod
     def from_config(cls, filepath):
         config_parser = configparser.ConfigParser()
@@ -53,16 +57,29 @@ class OAuthHandler:
         authorisation.update({'athlete': {'id': athlete_id}})
         self.token_cache.upsert_authorisation_token(authorisation)
 
-    def generate_authorisation_header(self, athlete_id: int):
-        auth_data = self.token_cache.get_authorisation_token(athlete_id)
+        self.current_token = authorisation['access_token']
+        self.current_token_expiry = authorisation['expires_at']
+        self.current_refresh_token = authorisation['refresh_token']
 
-        token_expires_at = auth_data['expires_at']
+    def generate_authorisation_header(self, athlete_id: int):
+        if self.current_token is None:
+            self.pull_token_data_from_cache(athlete_id)
+
+        # auth_data = self.token_cache.get_authorisation_token(athlete_id)
+
+        # token_expires_at = auth_data['expires_at']
         current_epoch_time = int(time.time())
 
-        if current_epoch_time > token_expires_at:
-            refresh_token = auth_data['refresh_token']
+        if current_epoch_time > self.current_token_expiry:
+            refresh_token = self.current_refresh_token
             self.refresh_access_token(athlete_id, refresh_token)
-            auth_data = self.token_cache.get_authorisation_token(athlete_id)
+            # auth_data = self.token_cache.get_authorisation_token(athlete_id)
 
-        token = auth_data['access_token']
-        return {'Authorization': f'Bearer {token}'}
+        # token = auth_data['access_token']
+        return {'Authorization': f'Bearer {self.current_token}'}
+
+    def pull_token_data_from_cache(self, athlete_id):
+        auth_data = self.token_cache.get_authorisation_token(athlete_id)
+        self.current_token = auth_data['access_token']
+        self.current_token_expiry = auth_data['expires_at']
+        self.current_refresh_token = auth_data['refresh_token']
