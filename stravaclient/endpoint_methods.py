@@ -41,7 +41,5 @@ class StravaClient:
 
         params = {'keys': stream_keys_string,
                   'key_by_type': 'true'}
-        print(params)
         response = requests.get(endpoints.activity_streams(activity_id), headers=auth_header, params=params)
-        print(response.text)
         return response.json()
