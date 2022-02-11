@@ -14,9 +14,12 @@ class StravaClient:
         response = requests.get(endpoints.athlete_info, headers=auth_header)
         return response.json()
 
-    def list_activities(self, athlete_id):
+    def list_activities(self, athlete_id: int, page: int = 1, per_page: int = 30):
+        request_params = {'page': page,
+                          'per_page': per_page}
+
         auth_header = self.authorisation.generate_authorisation_header(athlete_id)
-        response = requests.get(endpoints.athlete_activities, headers=auth_header)
+        response = requests.get(endpoints.athlete_activities, headers=auth_header, params=request_params)
         return response.json()
 
     def get_activity(self, athlete_id, activity_id):
