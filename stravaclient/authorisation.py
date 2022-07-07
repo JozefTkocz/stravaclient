@@ -30,11 +30,20 @@ class OAuthHandler:
                    config_parser['Credentials']['client_secret'],
                    token_cache)
 
-    def prompt_user_authorisation(self):
-        scope = 'read_all,activity:read_all,activity:write'
+    def prompt_user_authorisation(self, redirect_uri: str = 'http://localhost',
+                                  scope: str = 'read_all,activity:read_all,activity:write') -> int:
+        """
+        Prompt the user to authorise the app to access their strava profile.
+
+        :param redirect_uri: The URI that the user will be redirected to, with the authorization code as a query string
+        parameter
+        :param scope: The required scope for the application's access.
+
+        :return: the athlete ID for the authorised user profile.
+        """
         # prompt the user to provide access
         print('Retrieve Auth code from URL:')
-        code_request_url = self.generate_authorisation_url(scope=scope, redirect_uri=None)
+        code_request_url = self.generate_authorisation_url(scope=scope, redirect_uri=redirect_uri)
         print(code_request_url)
         authorisation_code = input('Enter authorisation code: ')
 
@@ -47,10 +56,11 @@ class OAuthHandler:
 
         authorisation = response.json()
         self.token_cache.upsert_authorisation_token(authorisation)
+        return authorisation['athlete']['id']
 
     def generate_authorisation_url(self, scope: str, redirect_uri: str = None) -> str:
         code_request_url = f'{endpoints.oauth_authorisation}?client_id={self.client_id}&response_type=code&' \
-                           f'redirect_uri=f{redirect_uri}&approval_prompt=force&scope={scope}'
+                           f'redirect_uri={redirect_uri}&approval_prompt=force&scope={scope}'
         return code_request_url
 
     def refresh_access_token(self, athlete_id: int, refresh_token: str):
