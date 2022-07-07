@@ -58,13 +58,18 @@ class OAuthHandler:
                   'client_secret': self.client_secret,
                   'grant_type': 'refresh_token',
                   'refresh_token': refresh_token}
-        authorisation = requests.post(endpoints.oauth_token, data=params).json()
+        authorisation = self._get_authorisation_token(params)
         authorisation.update({'athlete': {'id': athlete_id}})
         self.token_cache.upsert_authorisation_token(authorisation)
 
         self.current_token = authorisation['access_token']
         self.current_token_expiry = authorisation['expires_at']
         self.current_refresh_token = authorisation['refresh_token']
+
+    @staticmethod
+    def _get_authorisation_token(params):
+        authorisation = requests.post(endpoints.oauth_token, data=params).json()
+        return authorisation
 
     def generate_authorisation_header(self, athlete_id: int):
         if self.current_token is None:
