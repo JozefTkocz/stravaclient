@@ -34,7 +34,7 @@ class OAuthHandler:
         scope = 'read_all,activity:read_all,activity:write'
         # prompt the user to provide access
         print('Retrieve Auth code from URL:')
-        code_request_url = f'{endpoints.oauth_authorisation}?client_id={self.client_id}&response_type=code&redirect_uri=http://localhost/exchange_token&approval_prompt=force&scope={scope}'
+        code_request_url = self.generate_authorisation_url(scope=scope, redirect_uri=None)
         print(code_request_url)
         authorisation_code = input('Enter authorisation code: ')
 
@@ -47,6 +47,11 @@ class OAuthHandler:
 
         authorisation = response.json()
         self.token_cache.upsert_authorisation_token(authorisation)
+
+    def generate_authorisation_url(self, scope: str, redirect_uri: str = None) -> str:
+        code_request_url = f'{endpoints.oauth_authorisation}?client_id={self.client_id}&response_type=code&' \
+                           f'redirect_uri=f{redirect_uri}&approval_prompt=force&scope={scope}'
+        return code_request_url
 
     def refresh_access_token(self, athlete_id: int, refresh_token: str):
         params = {'client_id': self.client_id,
