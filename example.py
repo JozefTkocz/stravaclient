@@ -28,7 +28,7 @@ if __name__ == '__main__':
     temp_activity = UpdatableActivity.from_activity(an_activity)
     temp_activity.description = 'Strava API update activity endpoint test message.'
 
-    print(temp_activity.to_json())
+    print(temp_activity.to_dict())
 
     print('Getting streamsets...')
     streamset = client.get_activity_stream_set(athlete_id=athlete_id,
