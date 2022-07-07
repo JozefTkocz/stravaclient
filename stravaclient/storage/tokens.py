@@ -1,5 +1,4 @@
 from typing import Protocol
-
 import boto3
 import tinydb
 from botocore.exceptions import ClientError
