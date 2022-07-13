@@ -16,7 +16,7 @@ def read_requirements(requirements_file):
 setup(
     name="stravaclient",
     python_requires=">=3.8,<4.0",
-    version="0.0.1",
+    version="0.0.2",
     author="Jozef Tkocz",
     author_email="jozeftkocz@gmail.com",
     description=("Python client for the Strava API"),
