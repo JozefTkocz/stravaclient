@@ -1,5 +1,6 @@
 import configparser
 import time
+from typing import Dict
 
 import requests
 
@@ -81,7 +82,7 @@ class OAuthHandler:
         authorisation = requests.post(endpoints.oauth_token, data=params).json()
         return authorisation
 
-    def generate_authorisation_header(self, athlete_id: int):
+    def generate_authorisation_header(self, athlete_id: int) -> Dict:
         if self.current_token is None:
             self.pull_token_data_from_cache(athlete_id)
 
