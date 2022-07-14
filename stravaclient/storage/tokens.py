@@ -32,6 +32,9 @@ class TokenCache(Protocol):
     def get_authorisation_token(self, athlete_id):
         ...
 
+    def total_tokens(self):
+        ...
+
 
 class LocalTokenCache:
     def __init__(self, filename):
@@ -51,6 +54,10 @@ class LocalTokenCache:
 
     def get_authorisation_token(self, athlete_id):
         return self.database.get(doc_id=athlete_id)
+
+    @property
+    def total_tokens(self):
+        return len(self.database)
 
 
 class DynamoDBCache:
@@ -90,3 +97,7 @@ class DynamoDBCache:
                          'athlete_id': athlete_id})
 
             return data
+
+    @property
+    def total_tokens(self):
+        return self.table.item_count
