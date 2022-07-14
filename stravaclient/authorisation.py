@@ -48,13 +48,14 @@ class OAuthHandler:
         print(code_request_url)
         authorisation_code = input('Enter authorisation code: ')
 
+        return self.post_athlete_auth_code(authorisation_code)
+
+    def post_athlete_auth_code(self, authorisation_code: str) -> int:
         params = {'client_id': self.client_id,
                   'client_secret': self.client_secret,
                   'code': authorisation_code,
                   'grant_type': 'authorization_code'}
-
         response = requests.post(endpoints.oauth_token, data=params)
-
         authorisation = response.json()
         self.token_cache.upsert_authorisation_token(authorisation)
         return authorisation['athlete']['id']
