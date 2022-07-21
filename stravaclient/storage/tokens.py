@@ -1,4 +1,4 @@
-from typing import Protocol
+from typing import Protocol, Dict
 import boto3
 import tinydb
 from botocore.exceptions import ClientError
@@ -26,13 +26,16 @@ class TokenCacheFactory:
 
 
 class TokenCache(Protocol):
-    def upsert_authorisation_token(self, authorisation):
+    def upsert_authorisation_token(self, authorisation: Dict):
         ...
 
-    def get_authorisation_token(self, athlete_id):
+    def get_authorisation_token(self, athlete_id: int) -> str:
         ...
 
-    def total_tokens(self):
+    def delete_authorisation_token(self, athlete_id: int):
+        ...
+
+    def total_tokens(self) -> int:
         ...
 
 
