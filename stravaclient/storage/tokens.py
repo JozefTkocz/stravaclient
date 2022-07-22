@@ -1,4 +1,5 @@
-from typing import Protocol
+import logging
+from typing import Protocol, Dict
 import boto3
 import tinydb
 from botocore.exceptions import ClientError
@@ -26,21 +27,24 @@ class TokenCacheFactory:
 
 
 class TokenCache(Protocol):
-    def upsert_authorisation_token(self, authorisation):
+    def upsert_authorisation_token(self, authorisation: Dict):
         ...
 
-    def get_authorisation_token(self, athlete_id):
+    def get_authorisation_token(self, athlete_id: int) -> Dict:
         ...
 
-    def total_tokens(self):
+    def delete_authorisation_token(self, athlete_id: int):
+        ...
+
+    def total_tokens(self) -> int:
         ...
 
 
 class LocalTokenCache:
-    def __init__(self, filename):
+    def __init__(self, filename: str):
         self.database = tinydb.TinyDB(filename)
 
-    def upsert_authorisation_token(self, authorisation):
+    def upsert_authorisation_token(self, authorisation: Dict):
         athlete_id = authorisation['athlete']['id']
         auth_expiry = authorisation['expires_at']
         auth_access_token = authorisation['access_token']
@@ -52,11 +56,14 @@ class LocalTokenCache:
              'refresh_token': auth_refresh_token},
             doc_id=athlete_id))
 
-    def get_authorisation_token(self, athlete_id):
+    def get_authorisation_token(self, athlete_id: int) -> Dict:
         return self.database.get(doc_id=athlete_id)
 
+    def delete_authorisation_token(self, athlete_id: int):
+        self.database.remove(doc_ids=[athlete_id])
+
     @property
-    def total_tokens(self):
+    def total_tokens(self) -> int:
         return len(self.database)
 
 
@@ -68,7 +75,7 @@ class DynamoDBCache:
                                               aws_secret_access_key=aws_secret_access_key)
         self.table = self.dynamodb_client.Table(table_name)
 
-    def upsert_authorisation_token(self, authorisation):
+    def upsert_authorisation_token(self, authorisation: Dict):
         athlete_id = authorisation['athlete']['id']
         auth_expiry = authorisation['expires_at']
         auth_access_token = authorisation['access_token']
@@ -83,11 +90,12 @@ class DynamoDBCache:
             }
         )
 
-    def get_authorisation_token(self, athlete_id):
+    def get_authorisation_token(self, athlete_id: int) -> Dict:
         try:
             response = self.table.get_item(Key={'athlete_id': str(athlete_id)})
         except ClientError as e:
-            print(e.response['Error']['Message'])
+            logging.error('Failed to retrieve access token')
+            logging.error(e.response['Error']['Message'])
         else:
             data = response['Item']
             expires_at = int(data['expires_at'])
@@ -98,6 +106,13 @@ class DynamoDBCache:
 
             return data
 
+    def delete_authorisation_token(self, athlete_id: int):
+        try:
+            self.table.delete_item(Key={'athlete_id': str(athlete_id)})
+        except ClientError as e:
+            logging.error(f'Failed to remove athlete {athlete_id}')
+            logging.error(e.response['Error']['Message'])
+
     @property
-    def total_tokens(self):
+    def total_tokens(self) -> int:
         return self.table.item_count

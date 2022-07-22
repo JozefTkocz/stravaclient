@@ -46,6 +46,19 @@ class TestLocalTokenCache:
         assert cache.total_tokens == 1
         self.teardown_db(cache)
 
+    def test_delete_authorisation_token_removes_token_from_database(self):
+        cache = LocalTokenCache(self.test_db_file)
+        authorisation = {'athlete': {'id': 123},
+                         'expires_at': 1,
+                         'access_token': 'abc',
+                         'refresh_token': 'abc123'}
+        cache.upsert_authorisation_token(authorisation=authorisation)
+        cache.delete_authorisation_token(athlete_id=123)
+
+        document = cache.get_authorisation_token(athlete_id=123)
+        assert document is None
+        self.teardown_db(cache)
+
 
 class TestDynamoDBCache:
     class MockDynamoTable:
