@@ -8,13 +8,26 @@ from stravaclient.authorisation import OAuthHandler
 from stravaclient.models.activity import UpdatableActivity
 
 
+class RateLimitExceededError(Exception):
+    status_code = 429
+
+
 class StravaClient:
     def __init__(self, authorisation: OAuthHandler):
         self.authorisation = authorisation
 
+    @staticmethod
+    def _validate_response_code(response: requests.Response):
+        if response.status_code == RateLimitExceededError.status_code:
+            raise RateLimitExceededError
+
+        if not response.ok:
+            response.raise_for_status()
+
     def get_athlete_info(self, athlete_id: int) -> Dict:
         auth_header = self.authorisation.generate_authorisation_header(athlete_id)
         response = requests.get(endpoints.athlete_info, headers=auth_header)
+        self._validate_response_code(response)
         return response.json()
 
     def list_activities(self, athlete_id: int, page: int = 1, per_page: int = 30) -> Dict:
@@ -23,16 +36,19 @@ class StravaClient:
 
         auth_header = self.authorisation.generate_authorisation_header(athlete_id)
         response = requests.get(endpoints.athlete_activities, headers=auth_header, params=request_params)
+        self._validate_response_code(response)
         return response.json()
 
     def get_activity(self, athlete_id: int, activity_id: int) -> Dict:
         auth_header = self.authorisation.generate_authorisation_header(athlete_id)
         response = requests.get(endpoints.activity(activity_id), headers=auth_header)
+        self._validate_response_code(response)
         return response.json()
 
     def update_activity(self, athlete_id, activity_id, updatable_activity: UpdatableActivity) -> Dict:
         auth_header = self.authorisation.generate_authorisation_header(athlete_id)
         response = requests.put(endpoints.activity(activity_id), headers=auth_header, json=updatable_activity.to_dict())
+        self._validate_response_code(response)
         return response.json()
 
     def get_activity_stream_set(self, athlete_id: int, activity_id: int, streams: List[str],
@@ -53,6 +69,7 @@ class StravaClient:
         params = {'keys': stream_keys_string,
                   'key_by_type': 'true'}
         response = requests.get(endpoints.activity_streams(activity_id), headers=auth_header, params=params)
+        self._validate_response_code(response)
         return response.json()
 
     @staticmethod
