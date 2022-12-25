@@ -69,10 +69,13 @@ class LocalTokenCache:
 
 class DynamoDBCache:
     def __init__(self, aws_access_key_id, aws_secret_access_key, region_name, table_name):
-        self.dynamodb_client = boto3.resource('dynamodb',
-                                              region_name=region_name,
-                                              aws_access_key_id=aws_access_key_id,
-                                              aws_secret_access_key=aws_secret_access_key)
+        if aws_access_key_id is None:
+            self.dynamodb_client = boto3.resource('dynamodb', region_name=region_name)
+        else:
+            self.dynamodb_client = boto3.resource('dynamodb',
+                                                  region_name=region_name,
+                                                  aws_access_key_id=aws_access_key_id,
+                                                  aws_secret_access_key=aws_secret_access_key)
         self.table = self.dynamodb_client.Table(table_name)
 
     def upsert_authorisation_token(self, authorisation: Dict):
